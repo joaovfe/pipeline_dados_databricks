@@ -11,6 +11,7 @@ O pipeline segue a **Arquitetura Medalhão**, com três camadas principais:
 - **Databricks**: notebooks, Delta Lake, volumes de dados.
 - **PySpark**: processamento e transformação.
 - **SQL**: criação de schemas, tabelas e merges.
+- **Supabase**: banco de dados centralizado para ingestão de dados.
 - **Delta Tables**: persistência de cada camada.
 - **Git**: versionamento do código.
 

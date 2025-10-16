@@ -1,6 +1,22 @@
 # Camada Bronze
 
 A **Camada Bronze** é responsável pela **ingestão dos dados brutos** exatamente como são recebidos das fontes.
+Anteriormente, o arquivo .csv era injetado diretamente dentro do Databricks, agora a conexão é feita através do Supabase, através dp seguinte código:
+
+spark = SparkSession.builder.appName("AutomobileBronze").getOrCreate()
+
+jdbc_url = (
+    "jdbc:postgresql://aws-1-sa-east-1.pooler.supabase.com:6543/postgres"
+    "?sslmode=require&sslfactory=org.postgresql.ssl.NonValidatingFactory"
+)
+
+db_properties = {
+    "user": "postgres.gkqgjmsqisroffmbffmf",           
+    "password": "N`73gQ4L$*6h",         
+    "driver": "org.postgresql.Driver",
+}
+
+df_auto = spark.read.jdbc(url=jdbc_url, table="automobile", properties=db_properties)
 
 ## Principais Características
 
