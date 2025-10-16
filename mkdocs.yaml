@@ -1,0 +1,18 @@
+site_name: Pipeline de Dados - Arquitetura Medalhão
+theme:
+  name: material
+nav:
+  - Início: index.md
+  - Arquitetura: arquitetura.md
+  - Pipeline: pipeline.md
+  - Fluxo de Camadas: fluxo.md
+  - Camadas:
+      - Bronze: bronze.md
+      - Silver: silver.md
+      - Gold: gold.md
+markdown_extensions:
+  - admonition
+  - codehilite
+  - pymdownx.superfences
+  - toc:
+      permalink: true
