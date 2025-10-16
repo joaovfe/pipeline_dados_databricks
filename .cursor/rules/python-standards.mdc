@@ -1,0 +1,146 @@
+---
+globs: *.py
+description: Python coding standards and best practices for Databricks
+---
+
+# Python Coding Standards
+
+## Code Style
+
+Follow **PEP 8** standards with these specific guidelines:
+
+### Naming Conventions
+- **Functions**: `snake_case` (e.g., `process_automobile_data`)
+- **Variables**: `snake_case` (e.g., `bronze_table_name`)
+- **Constants**: `UPPER_SNAKE_CASE` (e.g., `DEFAULT_SCHEMA`)
+- **Classes**: `PascalCase` (e.g., `DataProcessor`)
+
+### Import Organization
+```python
+# Standard library imports
+import os
+import sys
+from typing import Dict, List
+
+# Third-party imports
+import pyspark.sql.functions as F
+from pyspark.sql import DataFrame, SparkSession
+
+# Local imports
+from utils.config import get_config
+```
+
+## Databricks-Specific Patterns
+
+### Spark Session Management
+```python
+# Get or create Spark session
+spark = SparkSession.builder.appName("Pipeline").getOrCreate()
+
+# Configure Spark settings
+spark.conf.set("spark.sql.adaptive.enabled", "true")
+spark.conf.set("spark.sql.adaptive.coalescePartitions.enabled", "true")
+```
+
+### Data Processing Functions
+```python
+def process_bronze_to_silver(df: DataFrame) -> DataFrame:
+    """
+    Transform data from Bronze to Silver layer.
+    
+    Args:
+        df: Input DataFrame from Bronze layer
+        
+    Returns:
+        Transformed DataFrame for Silver layer
+    """
+    return df.select(
+        F.col("id"),
+        F.upper(F.col("make")).alias("make"),
+        F.col("model"),
+        F.current_timestamp().alias("processed_at")
+    )
+```
+
+### Error Handling
+```python
+def safe_data_processing(df: DataFrame) -> DataFrame:
+    """Process data with proper error handling."""
+    try:
+        result = df.filter(F.col("id").isNotNull())
+        return result
+    except Exception as e:
+        print(f"Error processing data: {e}")
+        raise
+```
+
+## Best Practices
+
+### 1. Function Documentation
+- Use docstrings for all functions
+- Include type hints
+- Document parameters and return values
+
+### 2. Data Validation
+```python
+def validate_dataframe(df: DataFrame, required_columns: List[str]) -> bool:
+    """Validate DataFrame has required columns."""
+    missing_columns = set(required_columns) - set(df.columns)
+    if missing_columns:
+        raise ValueError(f"Missing columns: {missing_columns}")
+    return True
+```
+
+### 3. Configuration Management
+```python
+# Use environment variables and Spark config
+DATABASE_NAME = spark.conf.get("database.name", "default")
+TABLE_NAME = spark.conf.get("table.name", "automobile_data")
+```
+
+### 4. Logging
+```python
+import logging
+
+logger = logging.getLogger(__name__)
+
+def log_processing_stats(df: DataFrame, layer: str):
+    """Log processing statistics."""
+    count = df.count()
+    logger.info(f"Processed {count} records in {layer} layer")
+```
+
+### 5. Resource Management
+```python
+# Use context managers for file operations
+with open("config.json", "r") as f:
+    config = json.load(f)
+
+# Clean up resources
+df.unpersist()  # For cached DataFrames
+```
+
+## Common Anti-Patterns to Avoid
+
+1. **Don't use `collect()`** on large datasets
+2. **Don't hardcode** table names or paths
+3. **Don't ignore** null values without validation
+4. **Don't use** `show()` in production code
+5. **Don't forget** to handle schema evolution
+
+## Testing Guidelines
+
+```python
+def test_data_transformation():
+    """Test data transformation logic."""
+    # Create test DataFrame
+    test_data = [(1, "toyota", "camry"), (2, "honda", "civic")]
+    test_df = spark.createDataFrame(test_data, ["id", "make", "model"])
+    
+    # Test transformation
+    result = process_bronze_to_silver(test_df)
+    
+    # Assertions
+    assert result.count() == 2
+    assert "MAKE" in result.columns
+```

@@ -1,0 +1,98 @@
+---
+globs: *.ipynb
+description: Databricks notebook conventions and best practices
+---
+
+# Databricks Notebook Conventions
+
+## Naming Convention
+
+Notebooks follow a strict naming pattern: `{order}_{purpose}_{domain}.ipynb`
+
+Examples from this project:
+- `001_-environment-preparation.ipynb`
+- `002_-landing_to_bronze_automobile.ipynb`
+- `003_-bronze_to_silver_automobile.ipynb`
+- `004_-silver_to_gold_automobile.ipynb`
+- `005_-destroying-environment.ipynb`
+
+## Notebook Structure
+
+Each notebook should follow this structure:
+
+### 1. Header Section
+```python
+# Title: [Notebook Purpose]
+# Author: [Your Name]
+# Date: [Creation Date]
+# Description: [Brief description of notebook purpose]
+```
+
+### 2. Configuration Section
+```python
+# Configuration and parameters
+# Environment variables
+# Spark configuration
+# Widget parameters
+```
+
+### 3. Data Processing Section
+```python
+# Main data processing logic
+# Transformations
+# Quality checks
+```
+
+### 4. Output Section
+```python
+# Data persistence
+# Logging
+# Validation results
+```
+
+## Best Practices
+
+### Idempotency
+- Notebooks should be re-runnable without side effects
+- Use `OVERWRITE` mode carefully, protect with parameters
+- Implement proper error handling
+
+### Parameterization
+- Use Databricks widgets for user input
+- Store configuration in `spark.conf`
+- Use environment variables for sensitive data
+
+### Data Quality
+- Implement data validation at each step
+- Log processing metrics and errors
+- Use Delta Lake features for ACID transactions
+
+### Code Organization
+- Keep cells focused on single operations
+- Use markdown cells for documentation
+- Comment complex transformations
+- Follow PEP 8 for Python code
+
+## Common Patterns
+
+### Data Reading
+```python
+# Read from previous layer
+df = spark.read.format("delta").table("bronze.automobile_data")
+```
+
+### Data Writing
+```python
+# Write to next layer
+df.write.format("delta").mode("overwrite").saveAsTable("silver.automobile_data")
+```
+
+### Error Handling
+```python
+try:
+    # Data processing logic
+    result = process_data(df)
+except Exception as e:
+    print(f"Error processing data: {e}")
+    raise
+```

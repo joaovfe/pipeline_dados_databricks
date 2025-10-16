@@ -1,0 +1,113 @@
+---
+description: Databricks job orchestration and deployment guidelines
+---
+
+# Databricks Job Orchestration
+
+This project is designed to run as a **Databricks Job** with multiple tasks in sequence.
+
+## Job Configuration
+
+### Task Sequence
+The pipeline follows this execution order:
+
+| Order | Task Name | Notebook | Purpose |
+|-------|-----------|----------|---------|
+| 1 | `environment_preparation` | `001_-environment-preparation.ipynb` | Setup environment and assets |
+| 2 | `landing_to_bronze` | `002_-landing_to_bronze_automobile.ipynb` | Ingest raw data |
+| 3 | `bronze_to_silver` | `003_-bronze_to_silver_automobile.ipynb` | Clean and standardize data |
+| 4 | `silver_to_gold` | `004_-silver_to_gold_automobile.ipynb` | Create business metrics |
+| 5 | `destroying_environment` | `005_-destroying-environment.ipynb` | Cleanup resources |
+
+### Job Parameters
+
+Configure these parameters at the job level:
+
+```json
+{
+  "database_name": "automobile_pipeline",
+  "storage_path": "/mnt/datalake/automobile",
+  "environment": "production",
+  "overwrite_mode": "false"
+}
+```
+
+### Task Dependencies
+
+Each task depends on the previous one:
+- Task 2 depends on Task 1
+- Task 3 depends on Task 2
+- Task 4 depends on Task 3
+- Task 5 depends on Task 4
+
+## Cluster Configuration
+
+### Recommended Settings
+```json
+{
+  "node_type_id": "i3.xlarge",
+  "driver_node_type_id": "i3.xlarge",
+  "num_workers": 2,
+  "spark_version": "13.3.x-scala2.12",
+  "runtime_engine": "STANDARD"
+}
+```
+
+### Spark Configuration
+```json
+{
+  "spark.sql.adaptive.enabled": "true",
+  "spark.sql.adaptive.coalescePartitions.enabled": "true",
+  "spark.serializer": "org.apache.spark.serializer.KryoSerializer",
+  "spark.sql.adaptive.skewJoin.enabled": "true"
+}
+```
+
+## Monitoring and Alerting
+
+### Key Metrics to Monitor
+- Job execution time
+- Data quality metrics
+- Error rates
+- Resource utilization
+
+### Alerting Rules
+- Job failure notifications
+- Data quality threshold breaches
+- Performance degradation alerts
+
+## Deployment Best Practices
+
+### 1. Environment Management
+- Use separate workspaces for dev/staging/prod
+- Implement proper access controls
+- Use service principals for automation
+
+### 2. Version Control
+- Tag releases in git
+- Use notebook versioning in Databricks
+- Document deployment procedures
+
+### 3. Testing
+- Run jobs in development first
+- Validate data quality at each layer
+- Test rollback procedures
+
+### 4. Security
+- Use secrets management for credentials
+- Implement least privilege access
+- Audit job executions
+
+## Troubleshooting
+
+### Common Issues
+1. **Memory Issues**: Increase cluster size or optimize queries
+2. **Timeout Errors**: Check data volume and processing logic
+3. **Permission Errors**: Verify access to storage and databases
+4. **Schema Evolution**: Handle changing data structures gracefully
+
+### Debugging Steps
+1. Check job logs in Databricks UI
+2. Validate input data quality
+3. Test individual notebook cells
+4. Review Spark UI for performance issues

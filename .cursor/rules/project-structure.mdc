@@ -1,0 +1,40 @@
+---
+alwaysApply: true
+description: Project structure and organization guide for Databricks pipeline
+---
+
+# Project Structure Guide
+
+This is a Databricks data pipeline project following the **Medallion Architecture** (Bronze → Silver → Gold) for automobile data processing.
+
+## Main Components
+
+- **Entry Point**: [main.py](mdc:main.py) - Main Python application
+- **Configuration**: [pyproject.toml](mdc:pyproject.toml) - Project dependencies and metadata
+- **Documentation**: [mkdocs.yaml](mdc:mkdocs.yaml) - MkDocs configuration for documentation site
+- **Project Overview**: [README.md](mdc:README.md) - Complete project documentation
+
+## Directory Structure
+
+```
+notebooks/          # Databricks notebooks in execution order
+docs/              # MkDocs documentation files
+.cursor/rules/     # Cursor IDE rules
+```
+
+## Notebook Execution Order
+
+The pipeline follows a strict execution sequence:
+1. `001_-environment-preparation.ipynb` - Environment setup
+2. `002_-landing_to_bronze_automobile.ipynb` - Data ingestion (Landing → Bronze)
+3. `003_-bronze_to_silver_automobile.ipynb` - Data transformation (Bronze → Silver)
+4. `004_-silver_to_gold_automobile.ipynb` - Data aggregation (Silver → Gold)
+5. `005_-destroying-environment.ipynb` - Environment cleanup
+
+## Key Technologies
+
+- **Databricks**: Notebooks, Delta Lake, data volumes
+- **PySpark**: Data processing and transformation
+- **Delta Tables**: Data persistence for each layer
+- **Supabase**: Centralized database for data ingestion
+- **MkDocs**: Documentation generation

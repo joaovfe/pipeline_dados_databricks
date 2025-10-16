@@ -2,7 +2,9 @@
 
 **Exemplificação do fluxo entre camadas:**
 
-    A[Landing / Dados Brutos] --> B[Camada Bronze]
+```mermaid
+flowchart TD
+    DB[(Banco PostgreSQL<br/>Supabase)] --> B[Camada Bronze]
     B --> C[Camada Silver]
     C --> D[Camada Gold]
     
@@ -29,3 +31,4 @@
         G4[dim_origem]
         G5[dim_ano_modelo]
     end
+```

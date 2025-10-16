@@ -1,8 +1,12 @@
 # Camada Bronze
 
-A **Camada Bronze** é responsável pela **ingestão dos dados brutos** exatamente como são recebidos das fontes.
-Anteriormente, o arquivo .csv era injetado diretamente dentro do Databricks, agora a conexão é feita através do Supabase, através dp seguinte código:
+A **Camada Bronze** é responsável pela **ingestão dos dados brutos** diretamente do banco PostgreSQL em nuvem (Supabase).
 
+## Conexão com Banco de Dados
+
+A ingestão é realizada através de conexão JDBC direta com o Supabase:
+
+```python
 spark = SparkSession.builder.appName("AutomobileBronze").getOrCreate()
 
 jdbc_url = (
@@ -17,6 +21,7 @@ db_properties = {
 }
 
 df_auto = spark.read.jdbc(url=jdbc_url, table="automobile", properties=db_properties)
+```
 
 ## Principais Características
 
@@ -25,11 +30,13 @@ df_auto = spark.read.jdbc(url=jdbc_url, table="automobile", properties=db_proper
 - Mantém o histórico completo de ingestões.  
 - Fonte única de verdade dos dados originais.
 
-## Exemplo de Processamento
+## Processamento
 
 Os notebooks do Databricks nesta camada realizam:
-- Leitura de arquivos CSV, JSON ou Parquet.  
-- Aplicação de schema explícito (quando necessário).  
+- Conexão direta com banco PostgreSQL via JDBC
+- Leitura de tabelas específicas (automobile, motor, dimensoes, origem, ano_modelo)
+- Aplicação de metadados de auditoria (timestamp, nome da fonte)
+- Persistência em formato Delta Lake  
 
 ## Resultado
 

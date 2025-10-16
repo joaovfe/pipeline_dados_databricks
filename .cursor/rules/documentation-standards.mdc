@@ -1,0 +1,87 @@
+---
+globs: docs/*.md,*.md
+description: Documentation standards and MkDocs guidelines
+---
+
+# Documentation Standards
+
+This project uses **MkDocs** with the Material theme for documentation generation.
+
+## Configuration
+
+The documentation is configured in [mkdocs.yaml](mdc:mkdocs.yaml) with:
+- **Theme**: Material
+- **Extensions**: admonition, codehilite, pymdownx.superfences, toc
+- **Navigation**: Structured navigation with layer-specific sections
+
+## Documentation Structure
+
+### Main Documentation Files
+- [docs/index.md](mdc:docs/index.md) - Homepage and overview
+- [docs/arquitetura.md](mdc:docs/arquitetura.md) - Architecture documentation
+- [docs/pipeline.md](mdc:docs/pipeline.md) - Pipeline documentation
+- [docs/fluxo.md](mdc:docs/fluxo.md) - Data flow documentation
+
+### Layer-Specific Documentation
+- [docs/bronze.md](mdc:docs/bronze.md) - Bronze layer details
+- [docs/silver.md](mdc:docs/silver.md) - Silver layer details
+- [docs/gold.md](mdc:docs/gold.md) - Gold layer details
+
+## Writing Guidelines
+
+### Markdown Standards
+- Use proper heading hierarchy (H1 → H2 → H3)
+- Include table of contents for long documents
+- Use code blocks with language specification
+- Include diagrams using Mermaid when appropriate
+
+### Content Structure
+```markdown
+# Main Title
+
+Brief description of the content.
+
+## Section 1
+Content with proper formatting.
+
+### Subsection
+More detailed content.
+
+## Section 2
+Additional content.
+```
+
+### Code Examples
+```python
+# Always specify language for code blocks
+def example_function():
+    return "Hello World"
+```
+
+### Diagrams
+Use Mermaid for flowcharts and diagrams:
+```mermaid
+flowchart LR
+    A[Start] --> B[Process]
+    B --> C[End]
+```
+
+## Best Practices
+
+1. **Keep it Updated**: Documentation should reflect current implementation
+2. **Use Examples**: Include practical examples and use cases
+3. **Cross-Reference**: Link between related documentation files
+4. **Version Control**: Track documentation changes in git
+5. **Review Process**: Review documentation changes like code changes
+
+## Building Documentation
+
+To build and serve the documentation locally:
+```bash
+mkdocs serve
+```
+
+To build static site:
+```bash
+mkdocs build
+```

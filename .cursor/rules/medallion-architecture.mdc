@@ -1,0 +1,51 @@
+---
+description: Medallion architecture patterns and data flow guidelines
+---
+
+# Medallion Architecture Guidelines
+
+This project implements the **Medallion Architecture** (also known as Bronze-Silver-Gold) for data processing in Databricks.
+
+## Architecture Overview
+
+The data flows through three distinct layers, each with specific purposes:
+
+### 🥉 Bronze Layer (Raw Data)
+- **Purpose**: Faithful ingestion of raw data from Landing zone
+- **Characteristics**: Minimal processing, maximum auditability
+- **Notebook**: [002_-landing_to_bronze_automobile.ipynb](mdc:notebooks/002_-landing_to_bronze_automobile.ipynb)
+- **Data**: Raw, unprocessed data with schema evolution support
+
+### 🥈 Silver Layer (Cleaned Data)
+- **Purpose**: Data cleaning, standardization, and enrichment
+- **Characteristics**: Business-ready data with quality controls
+- **Notebook**: [003_-bronze_to_silver_automobile.ipynb](mdc:notebooks/003_-bronze_to_silver_automobile.ipynb)
+- **Data**: Cleaned, validated, and integrated data
+
+### 🥇 Gold Layer (Business Data)
+- **Purpose**: Aggregations, metrics, and business-specific datasets
+- **Characteristics**: Optimized for consumption and analytics
+- **Notebook**: [004_-silver_to_gold_automobile.ipynb](mdc:notebooks/004_-silver_to_gold_automobile.ipynb)
+- **Data**: Curated datasets for dashboards and reports
+
+## Data Flow Pattern
+
+```
+Landing → Bronze → Silver → Gold
+```
+
+## Key Principles
+
+1. **Idempotency**: Notebooks should be re-runnable without side effects
+2. **Separation of Concerns**: Each layer has a distinct responsibility
+3. **Data Lineage**: Clear traceability from source to consumption
+4. **Schema Evolution**: Support for changing data structures
+5. **Quality Gates**: Data validation at each layer transition
+
+## Implementation Notes
+
+- Use Delta Tables for persistence at each layer
+- Implement proper error handling and logging
+- Follow naming conventions: `{layer}_{domain}_{purpose}`
+- Parameterize operations for flexibility
+- Use Spark SQL and PySpark for transformations
