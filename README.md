@@ -29,6 +29,18 @@ notebooks/
   004_-silver_to_gold_automobile.ipynb    # Curadoria/Agrupações Silver -> Gold (automobile)
   005_-destroying-environment.ipynb       # Teardown/Limpeza de assets
 ```
+## Estrutura do MKDocs
+```
+docs/
+  arquitetura.md   # Arquitetura utilizada no projeto
+  bronze.md        # Descrições da camada bronze
+  silver.md        # Descrições da camada silver
+  gold.md          # Descrições da camada gold
+  index.md         # Página de início
+  pipeline.md      # Pipeline dos dados
+  fluxo.md         # Exemplificação dos fluxos entre as camadas
+```
+
 
 ## Orquestração com Job do Databricks
 
